@@ -10,12 +10,8 @@ const App = () => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const isMobileDevice = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-    if (isMobileDevice) {
-      alert('Not available on cell phones yet');
-      window.close();
-    } else {
+    
       const storedUser = localStorage.getItem('user');
       if (storedUser) {
         setUser(JSON.parse(storedUser));
@@ -23,7 +19,7 @@ const App = () => {
       } else {
         setSection("login");
       }
-    }
+    
   }, []);
 
   return (

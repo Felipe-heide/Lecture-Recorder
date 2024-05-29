@@ -264,31 +264,31 @@ localStorage.setItem('user', JSON.stringify(localUser));
       <br></br>
       <br></br>
       {activeText === "Transcript" && (
-        <p 
+        <div style={{ whiteSpace: 'pre-wrap' }} 
           contentEditable={editMode} 
           suppressContentEditableWarning={true} 
           onBeforeInput={(e) => handleTranscriptTextChange(index, e)}
         >
           {lecture.text}
-        </p>
+        </div>
       )}
       {activeText === "Detailed Summary" && (
-        <p 
+        <div style={{ whiteSpace: 'pre-wrap' }} 
           contentEditable={editMode} 
           suppressContentEditableWarning={true} 
           onInput={(e) => handleTranscriptDetailedSummaryChange(index, e)}
         >
           {lecture.detailed_summary}
-        </p>
+        </div>
       )}
       {activeText === "Bullet Summary" && (
-        <p 
+        <div style={{ whiteSpace: 'pre-wrap' }} 
           contentEditable={editMode} 
           suppressContentEditableWarning={true} 
           onInput={(e) => handleTranscriptBulletSummaryChange(index, e)}
         >
           {lecture.bullet_summary}
-        </p>
+        </div>
       )}
     </div>
   </div>

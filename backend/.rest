@@ -14,14 +14,14 @@ POST http://localhost:3000/api/users/login
 Content-Type: application/json
 
 {
-  "username": "felipe",
-  "password": "felipe"
+  "username": "rerere",
+  "password": "1234"
 }
 
 ###
-GET http://localhost:3000/api/users/664a160872787c03c3837363
+GET http://localhost:3000/api/users/66514eff20ebe8c90290039b
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjRhMTYwODcyNzg3YzAzYzM4MzczNjMiLCJpYXQiOjE3MTYxMzEzNzV9.uA2ipkRhyHRuJdmMqgy2QB0eoeD29elEJC3vQvUwUZU
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjUxNGVmZjIwZWJlOGM5MDI5MDAzOWIiLCJpYXQiOjE3MTcwMzQ1ODl9.W6e2-Hpv0uUVHbYmDr3wNZugLDc8KS_LCVLxdU4sc_0
 
 ###
 GET http://localhost:3000/api/users

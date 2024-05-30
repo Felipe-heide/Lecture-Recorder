@@ -38,6 +38,20 @@ export const Update = async (user, userId, token) => {
   }
 };
 
+export const Get = async (userId, token) => {
+  try {
+    const response = await axios.get(`${baseUrl}${userId}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error updating user:', error);
+    throw error;
+  }
+};
+
 export const Grok = async (message) => {
   try {
     const groqApiUrl = 'https://api.groq.com/openai/v1/chat/completions';
@@ -57,4 +71,4 @@ export const Grok = async (message) => {
   }
 };
 
-export default { Login, Register, Update, Grok };
+export default { Login, Register, Update, Grok, Get };

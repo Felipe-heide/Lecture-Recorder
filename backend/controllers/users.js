@@ -40,7 +40,7 @@ usersRouter.get('/:id',  async (req, res) => {
       return res.status(403).json({ message: 'Forbidden' });
     }
 
-    res.status(200).json(user);
+    res.status(200).json({token, user});
   } catch (err) {
     res.status(401).json({ message: 'Invalid token' });
   }

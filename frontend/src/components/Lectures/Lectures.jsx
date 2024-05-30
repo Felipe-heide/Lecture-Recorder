@@ -12,6 +12,7 @@ const Lectures = ({ userName, setSection }) => {
   const [activeText, setActiveText] = useState("Transcript");
   const [editMode, setEditMode] = useState(false);
   const [subjectName, setSubjectName] = useState('');
+  const [notMovingsubjectName, setNotMovingsubjectName] = useState('');
   const [lectureTitles, setLectureTitles] = useState([]);
   const [transcriptTitles, setTranscriptTitles] = useState([]);
   const [transcriptTexts, setTranscriptTexts] = useState([]);
@@ -42,6 +43,7 @@ const Lectures = ({ userName, setSection }) => {
     setFilteredLectures(filtered);
 
     setSubjectName(filtered.name)
+    setNotMovingsubjectName(filtered.name)
     
 
     setTranscriptTitles(
@@ -75,68 +77,67 @@ const Lectures = ({ userName, setSection }) => {
     }
   }
 
-  const toggleEditMode = () => {
-    setEditMode(!editMode);
-  }
+  const toggleEditMode = () => setEditMode(!editMode);
 
-  const handleSubjectNameChange = (e) => {
-    setSubjectName(e.target.innerText);
-  }
-
-  const handleLectureTitleChange = (index, e) => {
-    const newLectureTitles = [...lectureTitles];
-    newLectureTitles[index] = e.target.innerText;
-    setLectureTitles(newLectureTitles);
-  }
-
-  const handleTranscriptTitleChange = (index, e) => {
-    const newTranscriptTitles = [...transcriptTitles];
-    newTranscriptTitles[index] = e.target.innerText;
-    setTranscriptTitles(newTranscriptTitles);
-  }
-
-  const handleTranscriptTextChange = (index, e) => {
-    const newTranscriptTexts = [...transcriptTexts];
-    newTranscriptTexts[index] = e.target.innerText;
-    setTranscriptTexts(newTranscriptTexts);
-  }
-
-  const handleTranscriptDetailedSummaryChange = (index, e) => {
-    const newTranscriptTexts = [...transcriptTexts];
-    newTranscriptTexts[index] = e.target.innerText;
-    setTranscriptDetailedSummaries(newTranscriptTexts);
-  }
-
-  const handleTranscriptBulletSummaryChange = (index, e) => {
-    const newTranscriptTexts = [...transcriptTexts];
-    newTranscriptTexts[index] = e.target.innerText;
-    setTranscriptBulletSummaries(newTranscriptTexts);
-  }
-
-  const saveChanges = async() => {
-    const localUser = JSON.parse(localStorage.getItem('user'))
+  const handleSubjectNameChange = (e) => setSubjectName(e.target.innerText);
   
-    const subjectIndex = localUser.user.subjects.findIndex(subject => subject.name === subjectName);
+  const handleLectureTitleChange = (index, e) => setLectureTitles(titles => titles.map((title, i) => i === index ? e.target.innerText : title));
+  
+  const handleTranscriptTitleChange = (index, e) => setTranscriptTitles(titles => titles.map((title, i) => i === index ? e.target.innerText : title));
+  
+  const handleTranscriptTextChange = (index, e) => setTranscriptTexts(texts => texts.map((text, i) => i === index ? e.target.innerText : text));
+  
+  const handleTranscriptDetailedSummaryChange = (index, e) => setTranscriptDetailedSummaries(summaries => summaries.map((summary, i) => i === index ? e.target.innerText : summary));
+  
+  const handleTranscriptBulletSummaryChange = (index, e) => setTranscriptBulletSummaries(summaries => summaries.map((summary, i) => i === index ? e.target.innerText : summary));
+  
 
-const array = []
-for (let index = 0; index < lectureTitles.length; index++) {
-    array.push({
-        lecture_title: lectureTitles[index],
-        transcript_title: transcriptTitles[index],
-        text: transcriptTexts[index],
-        detailed_summary: transcriptDetailedSummaries[index],
-        bullet_summary: transcriptBulletSummaries[index]
-    });
-}
-localUser.user.subjects[subjectIndex].lectures = array
-localStorage.setItem('user', JSON.stringify(localUser));
-
+  const saveChanges = async () => {
+    const localUser = JSON.parse(localStorage.getItem('user'));
+  
+    const subjectIndex = localUser.user.subjects.findIndex(subject => subject.name === notMovingsubjectName);
+  
+    const updatedLectures = lectureTitles.map((title, index) => ({
+      lecture_title: title,
+      transcript_title: transcriptTitles[index],
+      text: transcriptTexts[index],
+      detailed_summary: transcriptDetailedSummaries[index],
+      bullet_summary: transcriptBulletSummaries[index]
+    }));
+  
+    localUser.user.subjects[subjectIndex].lectures = updatedLectures;
+    localUser.user.subjects[subjectIndex].name = subjectName;
+  
+    localStorage.setItem('user', JSON.stringify(localUser));
+  
     const { _id, ...userWithoutId } = localUser.user;
-    setEditMode(!editMode)
-
-      await Update(userWithoutId, _id, localUser.token); 
-      alert("Lecture saved successfully!");
-  }
+  
+    setEditMode(!editMode);
+  
+    const storedSubjects = localUser.user.subjects || [];
+  
+    const filtered = storedSubjects.find(lecture => lecture.name === subjectName);
+  
+    setFilteredLectures(filtered);
+    setSubjectName(filtered.name);
+    setNotMovingsubjectName(filtered.name);
+    setLectures(storedSubjects);
+  
+    const subjectNames = storedSubjects.map(subject => subject.name);
+    setSubjects(subjectNames);
+  
+    const initialTranscriptTexts = storedSubjects.flatMap(subject => subject.lectures.map(lecture => lecture.text));
+    const initialTranscriptDetailedSummaries = storedSubjects.flatMap(subject => subject.lectures.map(lecture => lecture.detailed_summary));
+    const initialTranscriptBulletSummaries = storedSubjects.flatMap(subject => subject.lectures.map(lecture => lecture.bullet_summary));
+  
+    setTranscriptTexts(initialTranscriptTexts);
+    setTranscriptDetailedSummaries(initialTranscriptDetailedSummaries);
+    setTranscriptBulletSummaries(initialTranscriptBulletSummaries);
+  
+    await Update(userWithoutId, _id, localUser.token);
+  
+    alert("Lecture saved successfully!");
+  };
 
   const handleNavigation = async() => {
     if (editMode) {
@@ -158,7 +159,7 @@ localStorage.setItem('user', JSON.stringify(localUser));
   const handleDeleteSubject = async() => {
     if (window.confirm(`Are you sure you want to delete the subject "${subjectName}"?`)) {
       const localUser = JSON.parse(localStorage.getItem('user'));
-      const updatedSubjects = localUser.user.subjects.filter(subject => subject.name !== subjectName);
+      const updatedSubjects = localUser.user.subjects.filter(subject => subject.name !== notMovingsubjectName );
       localUser.user.subjects = updatedSubjects;
       localStorage.setItem('user', JSON.stringify(localUser));
       const { _id, ...userWithoutId } = localUser.user;
@@ -172,6 +173,7 @@ localStorage.setItem('user', JSON.stringify(localUser));
   };
 
   const handleDeleteLecture = async(index) => {
+
     if (window.confirm(`Are you sure you want to delete the lecture "${lectureTitles[index]}"?`)) {
       const updatedLectures = [...filteredLectures.lectures];
       updatedLectures.splice(index, 1);
@@ -208,7 +210,12 @@ localStorage.setItem('user', JSON.stringify(localUser));
             {editMode && <button onClick={saveChanges}>Save <FaRegSave /></button>}
             {!editMode && <button onClick={toggleEditMode}>Edit <MdOutlineEdit className={styles.icon} /></button>}
           </div>
-          <h2 contentEditable={editMode} suppressContentEditableWarning={true} onInput={handleSubjectNameChange}>
+          <h2 contentEditable={editMode} suppressContentEditableWarning={true} onInput={handleSubjectNameChange} onKeyDown={(event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+    }
+  }}
+>
             {filteredLectures.name}
             {editMode && <FaRegTrashAlt className={styles.trash_icon} onClick={handleDeleteSubject}/>}
           </h2>
@@ -233,68 +240,80 @@ localStorage.setItem('user', JSON.stringify(localUser));
             </button>
           </div>
 
-          {filteredLectures.lectures.slice().reverse().map((lecture, index) => (
-  <div key={index} className={styles.lecture}>
-    <div className={styles.lecture_general} onClick={() => ShowInfo(index)}>
-      <div>
-        <h3 
-          contentEditable={editMode} 
-          suppressContentEditableWarning={true} 
-          onInput={(e) => handleLectureTitleChange(index, e)}
+          {filteredLectures.lectures.slice().reverse().map((lecture, indexNo) => {
+  const index = filteredLectures.lectures.length - indexNo - 1;
+  return (
+    <div key={index} className={styles.lecture}>
+      <div className={styles.lecture_general} onClick={() => ShowInfo(indexNo)}>
+        <div>
+          <h3
+            contentEditable={editMode}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') {
+                event.preventDefault();
+              }
+            }}
+          
+            suppressContentEditableWarning={true}
+            onInput={(e) => handleLectureTitleChange(index, e)}
+          >
+            {lecture.lecture_title}
+          </h3>
+          {editMode && (
+            <FaRegTrashAlt
+              className={styles.trash_icon}
+              onClick={() => handleDeleteLecture(index)}
+            />
+          )}
+        </div>
+        <MdKeyboardArrowDown className={styles.icon} />
+      </div>
+      <div className={styles.transcripts}>
+        <b
+          contentEditable={editMode}
+          suppressContentEditableWarning={true}
+          onInput={(e) => handleTranscriptTitleChange(index, e)}
         >
-          {lecture.lecture_title}
-        </h3>
-        {editMode && (
-          <FaRegTrashAlt 
-            className={styles.trash_icon} 
-            onClick={() => handleDeleteLecture(index)}
-          />
+          {lecture.transcript_title}
+        </b>
+        <br></br>
+        <br></br>
+        {activeText === "Transcript" && (
+          <div
+            style={{ whiteSpace: 'pre-wrap' }}
+            contentEditable={editMode}
+            suppressContentEditableWarning={true}
+            onBeforeInput={(e) => handleTranscriptTextChange(index, e)}
+          >
+            {lecture.text}
+          </div>
+        )}
+        {activeText === "Detailed Summary" && (
+          <div
+            style={{ whiteSpace: 'pre-wrap' }}
+            contentEditable={editMode}
+            suppressContentEditableWarning={true}
+            onInput={(e) => handleTranscriptDetailedSummaryChange(index, e)}
+          >
+            {lecture.detailed_summary}
+          </div>
+        )}
+        {activeText === "Bullet Summary" && (
+          <div
+            style={{ whiteSpace: 'pre-wrap' }}
+            contentEditable={editMode}
+            suppressContentEditableWarning={true}
+            onInput={(e) => handleTranscriptBulletSummaryChange(index, e)}
+          >
+            {lecture.bullet_summary}
+          </div>
         )}
       </div>
-      <MdKeyboardArrowDown className={styles.icon} />
     </div>
-    <div className={styles.transcripts}>
-      <b 
-        contentEditable={editMode} 
-        suppressContentEditableWarning={true} 
-        onInput={(e) => handleTranscriptTitleChange(index, e)}
-      >
-        {lecture.transcript_title}
-      </b>
-      <br></br>
-      <br></br>
-      {activeText === "Transcript" && (
-        <div style={{ whiteSpace: 'pre-wrap' }} 
-          contentEditable={editMode} 
-          suppressContentEditableWarning={true} 
-          onBeforeInput={(e) => handleTranscriptTextChange(index, e)}
-        >
-          {lecture.text}
-        </div>
-      )}
-      {activeText === "Detailed Summary" && (
-        <div style={{ whiteSpace: 'pre-wrap' }} 
-          contentEditable={editMode} 
-          suppressContentEditableWarning={true} 
-          onInput={(e) => handleTranscriptDetailedSummaryChange(index, e)}
-        >
-          {lecture.detailed_summary}
-        </div>
-      )}
-      {activeText === "Bullet Summary" && (
-        <div style={{ whiteSpace: 'pre-wrap' }} 
-          contentEditable={editMode} 
-          suppressContentEditableWarning={true} 
-          onInput={(e) => handleTranscriptBulletSummaryChange(index, e)}
-        >
-          {lecture.bullet_summary}
-        </div>
-      )}
-    </div>
-  </div>
-))}
+  );
+})}
+          </div>
 
-        </div>
       ) : (
         <div>
       <h2><b>{userName}'s</b> subjects:</h2>

@@ -9,8 +9,15 @@ import { Get } from "./ApiAssets.js"
 const App = () => {
   const [section, setSection] = useState(null);
   const [user, setUser] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 950);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+
     const fetchData = async () => {
       const storedUser = JSON.parse(localStorage.getItem('user'));
       if (storedUser) {
@@ -22,9 +29,18 @@ const App = () => {
         setSection("login");
       }
     };
-
     fetchData();
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
+
+  if (isMobile) {
+    alert('This site is not available on cellphones yet.');
+    window.close();
+    return null;
+  }
 
   return (
     <div>

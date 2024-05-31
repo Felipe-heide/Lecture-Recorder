@@ -96,6 +96,7 @@ const Lectures = ({ userName, setSection }) => {
     const localUser = JSON.parse(localStorage.getItem('user'));
   
     const subjectIndex = localUser.user.subjects.findIndex(subject => subject.name === notMovingsubjectName);
+
   
     const updatedLectures = lectureTitles.map((title, index) => ({
       lecture_title: title,
@@ -104,6 +105,7 @@ const Lectures = ({ userName, setSection }) => {
       detailed_summary: transcriptDetailedSummaries[index],
       bullet_summary: transcriptBulletSummaries[index]
     }));
+    console.log(updatedLectures)
   
     localUser.user.subjects[subjectIndex].lectures = updatedLectures;
     localUser.user.subjects[subjectIndex].name = subjectName;

@@ -37,7 +37,8 @@ const App = () => {
   }, []);
 
   if (isMobile) {
-    alert('This site is not available on cellphones yet.');
+    alert('This site is not available on cellphones YET.');
+    window.open("about:blank", "_self");
     window.close();
     return null;
   }

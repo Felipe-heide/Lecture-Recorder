@@ -14,7 +14,6 @@
 
 }
 .wrapper {
-  overflow: scroll;
     display: flex;
     flex-direction: column;
     text-align: left;
@@ -55,7 +54,6 @@
     
    
   }
- 
 
   .trash_icon{
     font-size: 23px;
@@ -122,14 +120,40 @@
    .navigation .active{
     background-color: #fff;
     color: #3d0c5b;}
-  
+
+    .scrollable_div {
+      margin-top: 10px;
+      overflow-y: auto; /* Show scrollbar only when needed */
+      height: 70% !important;
+      
+    }
+    
+    .scrollable_div::-webkit-scrollbar {
+      width: 8px; /* Adjust the width to make it thinner */
+    }
+    
+    .scrollable_div::-webkit-scrollbar-thumb {
+      background-color: grey; /* Set the scrollbar thumb color */
+      border-radius: 10px; /* Optional: to give it a rounded appearance */
+    }
+    
+    .scrollable_div::-webkit-scrollbar-thumb:hover {
+      background-color: darkgrey; /* Slightly darker color on hover */
+    }
+    
+    .scrollable_div::-webkit-scrollbar-track {
+      background: transparent; /* Make the scrollbar track transparent */
+    }
+    
     .lecture{
-      width: 80%;
+      width: 90%;
       height: fit-content;
-      margin: 15px auto;
+      margin: auto;
+      margin-bottom: 15px;
       text-align: left;
       border-radius: 20px;
       border: 2px solid #fff;
+
     }
     .lecture_general{
       padding-left: 50px;
@@ -143,9 +167,6 @@
     .lecture_general div{
       display: flex;
     }
-   
-  
-
 
     .lecture_general .icon{
       font-size: 26px;
@@ -156,7 +177,6 @@
   border-top: 1px solid white;
   padding: 10px;
   max-height: 50vh;
-  overflow: auto;
   display: none;
 }
    

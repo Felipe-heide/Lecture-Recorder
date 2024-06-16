@@ -241,7 +241,7 @@ const Lectures = ({ userName, setSection }) => {
               Bullet Summary
             </button>
           </div>
-
+<div className={styles.scrollable_div}>
           {filteredLectures.lectures.slice().reverse().map((lecture, indexNo) => {
   const index = filteredLectures.lectures.length - indexNo - 1;
   return (
@@ -313,7 +313,7 @@ const Lectures = ({ userName, setSection }) => {
       </div>
     </div>
   );
-})}
+})}</div>
           </div>
 
       ) : (

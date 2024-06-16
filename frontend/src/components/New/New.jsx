@@ -252,7 +252,7 @@ const New = ({ setSection }) => {
 
   return (
     <div className={styles.wrapper}>
-      <div>
+      <div className={styles.holder}>
       <IoArrowBackOutline
   onClick={() => {
     const confirmExit = window.confirm(
@@ -264,7 +264,7 @@ const New = ({ setSection }) => {
   }}
   className={styles.back_icon}
 />        <div className={styles.information}>
-        <input type="text" placeholder="Title" value={title} onChange={handleTitleChange} />
+        <input type="text" placeholder="Title" value={title} onChange={handleTitleChange} className={styles.margin_input}/>
           <select name="subject" id="" value={selectedSubject} onChange={handleSubjectChange}>
             <option value="selectionnnnn">Select a subject</option>
             {subjects.map((subject, index) => (
